@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://tableau.github.io/webdataconnector/connector.html"></script>
+  <script>
+    (function() {
+      var myConnector = tableau.makeConnector();
+
+      myConnector.getSchema = function(schemaCallback) {
+        // Pas besoin de définir le schéma dans ce cas
+        schemaCallback([]);
+      };
+
+      myConnector.getData = function(table, doneCallback) {
+        // Envoyer la requête POST ici
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://esbapi-rect:8125/flow/ignore", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        var data = {
+          "Request": {
+            "flow": {
+              "source": "1",
+              "masterdata": "19",
+              "productId": "PR4204",
+              "user": "wassim"
+            }
+          }
+        };
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = xhr.responseText;
+            // Traiter la réponse de l'API si nécessaire
+            doneCallback();
+          }
+        };
+
+        xhr.send(JSON.stringify(data));
+      };
+
+      tableau.registerConnector(myConnector);
+
+      $(document).ready(function() {
+        tableau.submit();
+      });
+    })();
+  </script>
+</head>
+<body></body>
+</html>
